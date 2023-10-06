@@ -28,17 +28,16 @@ async function submitHandler(evt) {
   evt.preventDefault();
   pageNum = 1;
   elements.loadBtn.style.display = `block`;
-  requestWord = evt.target.elements.searchQuery.value;
+  requestWord = evt.target.elements.searchQuery.value.trim();
 
   if (requestWord === '') {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-    elements.loadBtn.style.display = `none`;
-
-    return;
+     return;
   }
   try {
+    window.scrollTo(0, 0);
     const dataCards = await fetchPix(requestWord);
     const create = await createMarkup(dataCards);
 
@@ -56,6 +55,8 @@ async function submitHandler(evt) {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(requestWord));
     elements.loadBtn.addEventListener('click', loadMore);
   } catch (err) {
+    elements.gallery.innerHTML = '';
+    elements.loadBtn.style.display = `none`;
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
